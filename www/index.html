@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
+  
+
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script>
+    ons.ready(function() {
+      console.log("Onsen UI is ready!");
+      
+      // 銀行名データ初期値
+      var bankList = {
+        bank1 : "A-Bank",
+        bank2 : "B-Bank",
+        bank3 : "C-Bank",
+        bank4 : "D-bank"
+      };
+
+      // localstrageに銀行名データがない場合は作成
+      if(!localStorage.getItem("bankList")){
+        localStorage.setItem("bankList", JSON.stringify(bankList));   
+      }
+      
+      // 銀行名データを取得
+      var banks = JSON.parse(localStorage.getItem("bankList"));
+      // 銀行名データをlabelにセット
+      document.getElementById("bank1").innerHTML = banks.bank1;
+      document.getElementById("bank2").innerHTML = banks.bank2;
+      document.getElementById("bank3").innerHTML = banks.bank3;
+      document.getElementById("bank4").innerHTML = banks.bank4;
+      
+    });
+    
+
+    
+  </script>
+
+</head>
+<body>
+  <ons-page id="page01">
+    <ons-toolbar style="background-color:#2D444E;">
+      <div class="center" id="toolbar-title" style="color:#fff;">Account Balance</div>
+    </ons-toolbar>
+    <h2 class="h201">口座残高推移</h2>
+    <section id="label_wrapper">
+        <div id="label01" onclick="show('delete.html', this)">
+        <span id="span01">■</span>
+        <span id="bank1"></span>
+        <input type="hidden" id="bank1Data" />
+        </div>
+        <div id="label02" onclick="show('delete.html', this)">
+            <span id="span02">■</span>
+            <span id="bank2"></span>
+        </div>
+        <div id="label03" onclick="show('delete.html', this)">
+        <span id="span03">■</span>
+            <span id="bank3"></span>
+        </div>
+        <div id="label04" onclick="show('delete.html', this)">
+            <span id="span04">■</span>
+            <span id="bank4"></span>
+        </div>
+    </section>
+    <section id="graph01">
+        <svg id="chart"></svg>
+    </section>
+    <h2 class="h201">口座残高割合</h2>
+    <section id="graph02">
+        <div>
+            <canvas id="ratio_all"></canvas>
+        </div>
+    </section>
+  </ons-page>
+
+  <ons-template id="delete.html">
+  <ons-dialog id="dialog01">
+
+    <div class="alert-dialog-title">口座残高登録</div>
+    <div class="alert-dialog-content">
+      <section id="dialog_section">
+        <label>bank</label>
+        <ons-input id="bank" modifier="underbar" placeholder="" value="" float></ons-input><br />
+        <label>year</label>
+        <!--<ons-input id="year" modifier="underbar" placeholder="" value="" float></ons-input>--><br />
+        <ons-select id="year">
+          <option value="2017">2017</option>
+          <option value="2016">2016</option>
+          <option value="2015">2015</option>
+        </ons-select>
+        <label>month</label>
+        <!--<ons-input id="month" modifier="underbar" placeholder="" value="" float></ons-input>--><br />
+        <ons-select id="month">
+          <option value="0">1</option>
+          <option value="1">2</option>
+          <option value="2">3</option>
+          <option value="3">4</option>
+          <option value="4">5</option>
+          <option value="5">6</option>
+          <option value="6">7</option>
+          <option value="7">8</option>
+          <option value="8">9</option>
+          <option value="9">10</option>
+          <option value="10">11</option>
+          <option value="11">12</option>
+        </ons-select> 
+        <label>balance</label>
+        <ons-input id="balance" modifier="underbar" placeholder="" value="" float></ons-input><br />
+      </section>
+    </div>
+    <div class="alert-dialog-footer">
+      <button class="alert-dialog-button" onclick="hideCancel('dialog01');">Cancel</button>
+      <button id="OKButton" class="alert-dialog-button" onclick="hideOK('dialog01');">OK</button>
+    </div>
+  </ons-dialog>      
+  </ons-template>
+
+<script src="js/d3.v3.min.js"></script>
+<script src="js/lineGraph.js"></script>
+<script src="js/custom.js"></script>
+  <script src="js/chart.bundle.js"></script>
+  <script src="js/chart.util.js"></script>
+  <script src="js/pieGraph.js"></script>
+  <script>
+        // グラフ用データ取得
+        var ratioConfig = getRatioData();
+
+        window.onload = function() {
+            // 口座残高割合グラフ表示
+            var ctxRatio = document.getElementById("ratio_all").getContext("2d");
+            window.myPie = new Chart(ctxRatio, ratioConfig);
+            // polar area chart
+            //var ctxRatio = document.getElementById("ratio_all");
+            //window.myPolarArea = Chart.PolarArea(ctxRatio, ratioConfig);
+        };
+    </script>
+</body>
+</html>
